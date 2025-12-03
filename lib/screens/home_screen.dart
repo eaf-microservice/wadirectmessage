@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             const AboutMe(
                               applicationName: 'WhatsAppMe',
-                              version: '1.0.2',
+                              version: '1.0.3',
                               description:
                                   'An app to send WhatsApp messages without saving the contact.',
                               logo: CircleAvatar(
@@ -103,7 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text(
                           'أدخل رقم الهاتف مع رمز الدولة للانتقال\nمباشرة إلى محادثة واتساب دون حفظ الرقم',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 46, 45, 45),
+                          ),
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 20),
@@ -118,17 +121,21 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 10),
                         TextField(
                           controller: _phoneController,
+                          keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
                             hintText: 'مثال: 212645994904',
+                            hintStyle: const TextStyle(
+                              color: Color.fromARGB(255, 119, 119, 119),
+                            ),
                             hintTextDirection: TextDirection.rtl,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             filled: true,
-                            fillColor: Colors.grey[400],
+                            fillColor: Colors.grey[100],
                           ),
                           textAlign: TextAlign.center,
-                          keyboardType: TextInputType.phone,
+                          textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 20),
                         const Text(
@@ -137,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
+
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 10),
@@ -145,6 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: InputDecoration(
                             hintText: 'اكتب رسالتك هنا',
                             hintTextDirection: TextDirection.rtl,
+                            hintStyle: const TextStyle(
+                              color: Color.fromARGB(255, 119, 119, 119),
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -181,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
                         Container(
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
@@ -200,6 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 'المغرب: 212727593647\nمصر: 20123456789\nالأردن: 962791234567',
                                 textDirection: TextDirection.rtl,
                                 textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 48, 48, 48),
+                                ),
                               ),
                             ],
                           ),
