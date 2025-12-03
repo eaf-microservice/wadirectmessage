@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsappme/widgets/about.dart';
 
@@ -10,21 +11,28 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
+  String _fullPhoneNumber = '';
 
   @override
   void dispose() {
-    _phoneController.dispose();
     _messageController.dispose();
     super.dispose();
   }
 
   Future<void> _openWhatsApp() async {
-    final phone = _phoneController.text;
     final message = _messageController.text;
+    if (_fullPhoneNumber.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('الرجاء إدخال رقم هاتف صحيح')),
+        );
+      }
+      return;
+    }
+
     final url =
-        'https://wa.me/$phone${message.isNotEmpty ? '?text=${Uri.encodeComponent(message)}' : ''}';
+        'https://wa.me/$_fullPhoneNumber${message.isNotEmpty ? '?text=${Uri.encodeComponent(message)}' : ''}';
 
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
@@ -66,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: () {
                             const AboutMe(
                               applicationName: 'WhatsAppMe',
-                              version: '1.0.3',
+                              version: '1.0.4',
                               description:
                                   'An app to send WhatsApp messages without saving the contact.',
                               logo: CircleAvatar(
@@ -119,11 +127,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 10),
-                        TextField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
+                        IntlPhoneField(
                           decoration: InputDecoration(
-                            hintText: 'مثال: 212645994904',
+                            hintText: 'رقم الهاتف',
                             hintStyle: const TextStyle(
                               color: Color.fromARGB(255, 119, 119, 119),
                             ),
@@ -134,8 +140,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             filled: true,
                             fillColor: Colors.grey[100],
                           ),
+                          initialCountryCode: 'MA',
+                          onChanged: (phone) {
+                            setState(() {
+                              _fullPhoneNumber = phone.completeNumber;
+                            });
+                          },
                           textAlign: TextAlign.center,
-                          textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 20),
                         const Text(
@@ -144,7 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
-
                           textDirection: TextDirection.rtl,
                         ),
                         const SizedBox(height: 10),
