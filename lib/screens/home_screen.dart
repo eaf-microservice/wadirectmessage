@@ -179,7 +179,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
-                          onPressed: _openWhatsApp,
+                          onPressed: () {
+                            if (_fullPhoneNumber.isNotEmpty) {
+                              _openWhatsApp();
+                              _messageController.clear();
+                              _fullPhoneNumber = '';
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('الرجاء إدخال رقم هاتف صحيح'),
+                                ),
+                              );
+                            }
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF25D366),
                             minimumSize: const Size(double.infinity, 50),
