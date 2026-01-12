@@ -1,7 +1,7 @@
 name: wadirectmessage
 description: "Send message to whatsapp number without save it on contact"
 publish_to: 'none'
-version: 1.0.4+15
+version: 1.0.4+16
 environment:
   sdk: ^3.9.2
 

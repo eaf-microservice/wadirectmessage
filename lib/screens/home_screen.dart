@@ -183,7 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             if (_fullPhoneNumber.isNotEmpty) {
                               _openWhatsApp();
                               _messageController.clear();
-                              _fullPhoneNumber = '';
+                              setState(() {
+                                _fullPhoneNumber = '';
+                              });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
