@@ -36,7 +36,10 @@ class AboutMe {
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor:
-              backgroundColor ?? Theme.of(context).dialogBackgroundColor,
+              backgroundColor ??
+              Theme.of(
+                context,
+              ).dialogTheme.backgroundColor, // dialogBackgroundColor,
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
