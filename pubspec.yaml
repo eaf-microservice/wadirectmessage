@@ -1,7 +1,7 @@
 name: wadirectmessage
 description: "Send message to whatsapp number without save it on contact"
-publish_to: 'none'
-version: 1.0.4+16
+publish_to: "none"
+version: 1.0.5+17
 environment:
   sdk: ^3.9.2
 
@@ -18,6 +18,8 @@ dependencies:
   stack_trace: ^1.12.1
   web: ^1.1.1
   flutter_launcher_icons: ^0.14.4
+  google_mobile_ads: ^7.0.0
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
