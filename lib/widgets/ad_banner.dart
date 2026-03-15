@@ -13,6 +13,7 @@ class _AdBannerState extends State<AdBanner> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
   bool _isConnected = false;
+  AdSize? _adSize;
 
   final String _adUnitId = 'ca-app-pub-5890832306883406/4548122505';
 
@@ -20,9 +21,7 @@ class _AdBannerState extends State<AdBanner> {
   void initState() {
     super.initState();
     _checkConnectivity();
-    Connectivity().onConnectivityChanged.listen((
-      List<ConnectivityResult> results,
-    ) {
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
       bool hasConnection =
           results.isNotEmpty && !results.contains(ConnectivityResult.none);
       if (hasConnection != _isConnected) {
@@ -50,21 +49,36 @@ class _AdBannerState extends State<AdBanner> {
     }
   }
 
-  void _loadAd() {
+  Future<void> _loadAd() async {
+    // Use adaptive banner size based on current screen width
+    final width = MediaQuery.of(context).size.width.truncate();
+    AdSize adSize = await AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(width) ??
+        AdSize.banner;
+
+    if (!mounted) return;
+
     _bannerAd = BannerAd(
       adUnitId: _adUnitId,
       request: const AdRequest(),
-      size: AdSize.banner,
+      size: adSize,
       listener: BannerAdListener(
         onAdLoaded: (ad) {
           if (mounted) {
             setState(() {
               _isLoaded = true;
+              _adSize = adSize;
             });
           }
         },
         onAdFailedToLoad: (ad, err) {
+          debugPrint('AdBanner failed to load: $err');
           ad.dispose();
+          if (mounted) {
+            setState(() {
+              _bannerAd = null;
+              _isLoaded = false;
+            });
+          }
         },
       ),
     )..load();
@@ -78,11 +92,11 @@ class _AdBannerState extends State<AdBanner> {
 
   @override
   Widget build(BuildContext context) {
-    if (_isConnected && _isLoaded && _bannerAd != null) {
+    if (_isConnected && _isLoaded && _bannerAd != null && _adSize != null) {
       return SafeArea(
         child: SizedBox(
-          width: _bannerAd!.size.width.toDouble(),
-          height: _bannerAd!.size.height.toDouble(),
+          width: _adSize!.width.toDouble(),
+          height: _adSize!.height.toDouble(),
           child: AdWidget(ad: _bannerAd!),
         ),
       );

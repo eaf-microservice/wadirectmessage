@@ -78,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   const AboutMe(
                                     applicationName: 'Wa Direct Message',
-                                    version: '1.0.4',
+                                    version: '1.0.6',
                                     description:
                                         'Send direct messages without saving contacts. Fast, secure, and easy to use.',
                                     logo: CircleAvatar(
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(height: 10),
                               IntlPhoneField(
                                 decoration: InputDecoration(
-                                  hintText: 'رقم الهاتف',
+                                  hintText: 'رقم الهاتف : 645994904',
                                   hintStyle: const TextStyle(
                                     color: Color.fromARGB(255, 119, 119, 119),
                                   ),
@@ -273,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const AdBanner(), // The banner will show up here at the bottom
+          AdBanner(), // The banner will show up here at the bottom
         ],
       ),
     );
