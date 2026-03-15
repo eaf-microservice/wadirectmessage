@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Column(
         children: [
+          AdBanner(), // The banner will show up here at the top of the screen
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
@@ -186,10 +187,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onPressed: () {
                                   if (_fullPhoneNumber.isNotEmpty) {
                                     _openWhatsApp();
-                                    _messageController.clear();
-                                    setState(() {
-                                      _fullPhoneNumber = '';
-                                    });
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
@@ -273,7 +270,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          AdBanner(), // The banner will show up here at the bottom
         ],
       ),
     );

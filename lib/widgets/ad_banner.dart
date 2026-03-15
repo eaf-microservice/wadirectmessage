@@ -29,7 +29,11 @@ class _AdBannerState extends State<AdBanner> {
           _isConnected = hasConnection;
         });
         if (_isConnected && !_isLoaded) {
-          _loadAd();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && !_isLoaded) {
+              _loadAd();
+            }
+          });
         }
       }
     });
@@ -43,8 +47,12 @@ class _AdBannerState extends State<AdBanner> {
       setState(() {
         _isConnected = hasConnection;
       });
-      if (_isConnected) {
-        _loadAd();
+      if (_isConnected && !_isLoaded) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted && !_isLoaded) {
+            _loadAd();
+          }
+        });
       }
     }
   }
