@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wadirectmessage/widgets/about.dart';
-import 'package:wadirectmessage/widgets/ad_banner.dart';
+import 'package:wadirectmessage/widgets/admob_config.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,11 +15,41 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _messageController = TextEditingController();
   String _fullPhoneNumber = '';
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBannerAd();
+  }
 
   @override
   void dispose() {
     _messageController.dispose();
+    _bannerAd?.dispose();
     super.dispose();
+  }
+
+  void _loadBannerAd() {
+    if (!AdMobConfig.adsEnabled) return;
+
+    _bannerAd = BannerAd(
+      adUnitId: AdMobConfig.bannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _isBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('Banner ad failed to load: $error');
+          ad.dispose();
+        },
+      ),
+    )..load();
   }
 
   Future<void> _openWhatsApp() async {
@@ -51,7 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Column(
         children: [
-          AdBanner(), // The banner will show up here at the top of the screen
+          // AdBanner(), // The banner will show up here at the top of the screen
+          // Banner Ad - Only shows when successfully loaded
+          if (_isBannerAdLoaded && _bannerAd != null)
+            Container(
+              width: _bannerAd!.size.width.toDouble(),
+              height: _bannerAd!.size.height.toDouble(),
+              alignment: Alignment.center,
+              child: AdWidget(ad: _bannerAd!),
+            ),
           Expanded(
             child: Container(
               decoration: const BoxDecoration(
@@ -134,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               const SizedBox(height: 10),
                               IntlPhoneField(
                                 decoration: InputDecoration(
-                                  hintText: 'رقم الهاتف : 645994904',
+                                  hintText: 'مثال: 645994904',
                                   hintStyle: const TextStyle(
                                     color: Color.fromARGB(255, 119, 119, 119),
                                   ),
