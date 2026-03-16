@@ -118,7 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   const AboutMe(
                                     applicationName: 'Wa Direct Message',
-                                    version: '1.0.6',
+                                    version: '1.0.7',
                                     description:
                                         'Send direct messages without saving contacts. Fast, secure, and easy to use.',
                                     logo: CircleAvatar(
