@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _messageController.dispose();
     _bannerAd?.dispose();
+    _bannerAd = null;
     super.dispose();
   }
 
@@ -80,27 +81,28 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          // AdBanner(), // The banner will show up here at the top of the screen
-          // Banner Ad - Only shows when successfully loaded
-          if (_isBannerAdLoaded && _bannerAd != null)
-            Container(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              alignment: Alignment.center,
-              child: AdWidget(ad: _bannerAd!),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Banner Ad - Only shows when successfully loaded
+            // Banner Ad - Using a stable container to prevent tree reconciliation issues
+            SizedBox(
+              height: _isBannerAdLoaded && _bannerAd != null
+                  ? _bannerAd!.size.height.toDouble()
+                  : 0,
+              child: _isBannerAdLoaded && _bannerAd != null
+                  ? AdWidget(key: ValueKey(_bannerAd!.adUnitId), ad: _bannerAd!)
+                  : const SizedBox.shrink(),
             ),
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Color(0xFF6C5CE7), Color(0xFF5856D6)],
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xFF6C5CE7), Color(0xFF5856D6)],
+                  ),
                 ),
-              ),
-              child: SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -116,21 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  const AboutMe(
-                                    applicationName: 'Wa Direct Message',
-                                    version: '1.0.7',
-                                    description:
-                                        'Send direct messages without saving contacts. Fast, secure, and easy to use.',
-                                    logo: CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: Color(0xFF673AB7),
-                                      child: Image(
-                                        image: AssetImage('assets/app.png'),
-                                        width: 40,
-                                        height: 40,
-                                      ),
-                                    ),
-                                  ).showCustomAbout(context);
+                                  _showAboutMe().showCustomAbout(context);
                                 },
                                 child: const CircleAvatar(
                                   radius: 40,
@@ -279,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     SizedBox(height: 8),
                                     Text(
-                                      'المغرب: 212727593647\nمصر: 20123456789\nالأردن: 962791234567',
+                                      'مصر: 20123456789\nالأردن: 962791234567',
                                       textDirection: TextDirection.rtl,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -308,8 +296,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  AboutMe _showAboutMe() {
+    return const AboutMe(
+      applicationName: 'Wa Direct Message',
+      version: '1.0.9',
+      description:
+          'Send direct messages without saving contacts. Fast, secure, and easy to use.',
+      logo: CircleAvatar(
+        radius: 40,
+        backgroundColor: Color(0xFF673AB7),
+        child: Image(
+          image: AssetImage('assets/app.png'),
+          width: 40,
+          height: 40,
+        ),
       ),
     );
   }

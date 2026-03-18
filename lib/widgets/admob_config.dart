@@ -3,7 +3,7 @@ import 'dart:io';
 /// AdMob configuration for managing ad unit IDs across the app
 class AdMobConfig {
   // Set to true to use test ads (recommended for development)
-  static const bool useTestAds = false;
+  static const bool useTestAds = !bool.fromEnvironment('dart.vm.product');
 
   // Test Ad Unit IDs (safe to use during development)
   static String get _testBannerAdUnitId => Platform.isAndroid
@@ -13,10 +13,10 @@ class AdMobConfig {
   // Production Ad Unit IDs (replace with your actual AdMob ad unit IDs)
   static const String _productionBannerAdUnitIdAndroid =
       // Replace with your Android banner ad unit ID
-      'ca-app-pub-5890832306883406/4548122505';
+      'ca-app-pub-5890832306883406/1810783105';
   static const String _productionBannerAdUnitIdIOS =
       // Replace with your iOS banner ad unit ID
-      'ca-app-pub-5890832306883406/4548122505';
+      'ca-app-pub-5890832306883406/1810783105';
 
   /// Get the appropriate banner ad unit ID based on platform and test mode
   static String get bannerAdUnitId {
