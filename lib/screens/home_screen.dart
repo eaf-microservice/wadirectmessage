@@ -17,11 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
   String _fullPhoneNumber = '';
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
+  BannerAd? _bottomBannerAd;
+  bool _isBottomBannerAdLoaded = false;
 
   @override
   void initState() {
     super.initState();
     _loadBannerAd();
+    _loadBottomBannerAd();
   }
 
   @override
@@ -29,6 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _messageController.dispose();
     _bannerAd?.dispose();
     _bannerAd = null;
+    _bottomBannerAd?.dispose();
+    _bottomBannerAd = null;
     super.dispose();
   }
 
@@ -47,6 +52,27 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         onAdFailedToLoad: (ad, error) {
           debugPrint('Banner ad failed to load: $error');
+          ad.dispose();
+        },
+      ),
+    )..load();
+  }
+
+  void _loadBottomBannerAd() {
+    if (!AdMobConfig.adsEnabled) return;
+
+    _bottomBannerAd = BannerAd(
+      adUnitId: AdMobConfig.bottomBannerAdUnitId,
+      size: AdSize.banner,
+      request: const AdRequest(),
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _isBottomBannerAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          debugPrint('Bottom banner ad failed to load: $error');
           ad.dispose();
         },
       ),
@@ -81,28 +107,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Banner Ad - Only shows when successfully loaded
-            // Banner Ad - Using a stable container to prevent tree reconciliation issues
-            SizedBox(
-              height: _isBannerAdLoaded && _bannerAd != null
-                  ? _bannerAd!.size.height.toDouble()
-                  : 0,
-              child: _isBannerAdLoaded && _bannerAd != null
-                  ? AdWidget(key: ValueKey(_bannerAd!.adUnitId), ad: _bannerAd!)
-                  : const SizedBox.shrink(),
-            ),
-            Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Color(0xFF6C5CE7), Color(0xFF5856D6)],
-                  ),
-                ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF6C5CE7), Color(0xFF5856D6)],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Banner Ad - Only shows when successfully loaded
+              // Banner Ad - Using a stable container to prevent tree reconciliation issues
+              SizedBox(
+                height: _isBannerAdLoaded && _bannerAd != null
+                    ? _bannerAd!.size.height.toDouble()
+                    : 0,
+                child: _isBannerAdLoaded && _bannerAd != null
+                    ? AdWidget(
+                        key: ValueKey(_bannerAd!.adUnitId),
+                        ad: _bannerAd!,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+              Expanded(
                 child: Center(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -295,8 +324,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ),
-            ),
-          ],
+              // Bottom Banner Ad
+              SizedBox(
+                height: _isBottomBannerAdLoaded && _bottomBannerAd != null
+                    ? _bottomBannerAd!.size.height.toDouble()
+                    : 0,
+                child: _isBottomBannerAdLoaded && _bottomBannerAd != null
+                    ? AdWidget(
+                        key: ValueKey('bottom_${_bottomBannerAd!.adUnitId}'),
+                        ad: _bottomBannerAd!,
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -305,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
   AboutMe _showAboutMe() {
     return const AboutMe(
       applicationName: 'Wa Direct Message',
-      version: '1.0.9',
+      version: '1.1.0',
       description:
           'Send direct messages without saving contacts. Fast, secure, and easy to use.',
       logo: CircleAvatar(
